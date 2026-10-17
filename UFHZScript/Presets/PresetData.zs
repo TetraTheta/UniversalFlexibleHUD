@@ -160,6 +160,8 @@ extend class JGPUFH_PresetHandler
 		JGPUFH_PresetCVarData.Add('jgphud_MinimapOpacity', cvarData, CVC_Minimap);
 
 		JGPUFH_PresetCVarData.Add('jgphud_MapDataScale', cvarData, CVC_Mapdata);
+		JGPUFH_PresetCVarData.Add('jgphud_MapDataPosition', cvarData, CVC_Mapdata);
+		JGPUFH_PresetCVarData.Add('jgphud_MapDataMargin', cvarData, CVC_Mapdata);
 		JGPUFH_PresetCVarData.Add('jgphud_DrawKills', cvarData, CVC_Mapdata|CVC_Visibility);
 		JGPUFH_PresetCVarData.Add('jgphud_DrawItems', cvarData, CVC_Mapdata|CVC_Visibility);
 		JGPUFH_PresetCVarData.Add('jgphud_DrawSecrets', cvarData, CVC_Mapdata|CVC_Visibility);

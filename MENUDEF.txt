@@ -458,6 +458,8 @@ OptionMenu "JGPHUD_MapData"
 	StaticText "$JGPHUD_MAPDATA_TITLE", yellow
 	StaticText ""
 	Slider "$JGPHUD_MAPDATA_SCALE", "jgphud_MapDataScale", 0.1, 4.0, 0.1, 2
+	Option "$JGPHUD_MAPDATA_POSITION", "jgphud_MapDataPosition", "MapDataPositions"
+	Slider "$JGPHUD_MAPDATA_MARGIN", "jgphud_MapDataMargin", 0, 64, 1, 0
 	Option "$JGPHUD_MAPDATA_KILLS", "jgphud_DrawKills", "OnOff"
 	Option "$JGPHUD_MAPDATA_ITEMS", "jgphud_DrawItems", "OnOff"
 	Option "$JGPHUD_MAPDATA_SECRETS", "jgphud_DrawSecrets", "OnOff"
@@ -552,6 +554,15 @@ OptionValue "MinimapColorOptions"
 {
 	0, "$JGPHUD_MINIMAP_DEFAULTCOLORS"
 	1, "$OPTVAL_CUSTOM"
+}
+
+OptionValue "MapDataPositions"
+{
+	0, "$JGPHUD_MAPDATA_POSITION_AUTO"
+	1, "$JGPHUD_MAPDATA_POSITION_ABOVE"
+	2, "$JGPHUD_MAPDATA_POSITION_BELOW"
+	3, "$JGPHUD_MAPDATA_POSITION_LEFT"
+	4, "$JGPHUD_MAPDATA_POSITION_RIGHT"
 }
 
 OptionValue "CardinalDirections"

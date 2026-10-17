@@ -217,6 +217,13 @@ Show kill count,JGPHUD_MAPDATA_KILLS,Option in the Map Data options block (On/Of
 Show secrets count,JGPHUD_MAPDATA_SECRETS,Option in the Map Data options block (On/Off),Показывать секреты,Exibir contagem de segredos,Anzahl der Geheimnisse anzeigen,Mostrar contador de secretos,Nombre de secrets
 Show items count,JGPHUD_MAPDATA_ITEMS,Option in the Map Data options block (On/Off),Показывать предметы,Exibir contagem de itens,Anzahl der Gegenstände anzeigen,Mostrar contador de objetos,Nombres d’objets
 Map data scale,JGPHUD_MAPDATA_SCALE,A slider that changes the size of the block with kill/item/secret counts. The base size is determined by the size of the minimap; this slider lets the player adjust the relative size.,Масштаб мини-карты,Escala dos dados do mapa,,,
+Map data position,JGPHUD_MAPDATA_POSITION,Controls where the map data block is attached to the minimap.,,,,,
+Automatic,JGPHUD_MAPDATA_POSITION_AUTO,Places map data toward the inside of the screen.,,,,,
+Above minimap,JGPHUD_MAPDATA_POSITION_ABOVE,Attaches map data above the minimap.,,,,,
+Below minimap,JGPHUD_MAPDATA_POSITION_BELOW,Attaches map data below the minimap.,,,,,
+Left of minimap,JGPHUD_MAPDATA_POSITION_LEFT,Attaches map data to the left of the minimap.,,,,,
+Right of minimap,JGPHUD_MAPDATA_POSITION_RIGHT,Attaches map data to the right of the minimap.,,,,,
+Map data margin,JGPHUD_MAPDATA_MARGIN,Space between the minimap and map data block.,,,,,
 Scoreboard,JGPHUD_SCOREBOARD_TITLE,"Menu title for showing scoreboard (like the built-in scoreboard, but a small, always visible version)",Таблица очков,,,,
 Scoreboard display mode,JGPHUD_SCOREBOARD_ENABLE,"Menu element for setting up  how the scoreboard will appear. Possible values are ""Off"", ""Full"", ""Only top player"", ""Only you""",Отображение таблицы очков,,,,
 Full,JGPHUD_SCOREBOARD_ENABLE_FULL,Scoreboard display mode. Shows full scoreboard.,Полная,,,,

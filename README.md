@@ -60,7 +60,7 @@
   
   * Customizable minimap colors, size and shape (square or circular)
   
-  * Optional Map Data block that can show kills, secrets, items and level time (all toggleablle)
+  * Optional Map Data block that can show kills, secrets, items and level time (all toggleable), with four-sided minimap attachment and configurable spacing
   
   * Also supports map markers, such as the ones used by [Hellscape Navigator](https://github.com/mmaulwurff/hellscape-navigator/tree/master)
 

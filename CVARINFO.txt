@@ -107,6 +107,8 @@ nosave int jgphud_MinimapCardinalDirColor = 5;
 nosave float jgphud_MinimapOpacity = 1.0;
 
 nosave float jgphud_MapDataScale = 1.0;
+nosave int jgphud_MapDataPosition = 0;
+nosave int jgphud_MapDataMargin = 2;
 
 nosave bool jgphud_DrawCompass = false;
 nosave float jgphud_compassScale = 0.8;

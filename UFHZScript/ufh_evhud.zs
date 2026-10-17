@@ -182,6 +182,14 @@ class JGPUFH_FlexibleHUD : EventHandler
 		MDD_MAPONLY,
 		MDD_BOTH,
 	}
+	enum EMapDataPositions
+	{
+		MDP_AUTO,
+		MDP_ABOVE,
+		MDP_BELOW,
+		MDP_LEFT,
+		MDP_RIGHT,
+	}
 	enum EMapColorType
 	{
 		MCT_Background,
@@ -3661,7 +3669,7 @@ class JGPUFH_FlexibleHUD : EventHandler
 		return drawmap, drawradar;
 	}
 
-	// This draws a minimap with an optional map information block below.
+	// This draws a minimap with an optional attached map information block.
 	// The minimap is a pretty annoying bit. Aside from potentially causing
 	// performance issues, it also has  to be drawn fully using Screen
 	// methods because StatusBar doesn't have anything like shapes and
@@ -3685,9 +3693,7 @@ class JGPUFH_FlexibleHUD : EventHandler
 		// coordinates rather virtual ones:
 		Vector2 pos = AdjustElementPos((0,0), flags, (size, size), ofs, real:true);
 
-		// Draw map data below the minimap
-		// (or above it if it's at the bottom of the screen):
-		// draw it above the minimap if that's at the bottom:
+		// Draw map data at its configured attachment point.
 		DrawMapData(ofs, flags, size);
 		
 		// If the actual minimap is disabled, stop here:
@@ -4482,9 +4488,8 @@ class JGPUFH_FlexibleHUD : EventHandler
 		return tex;
 	}
 
-	// Draw map data (kills/secrets/items/time) below the
-	// minimap (even if the minimap isn't drawn, it'll be
-	// attached to the same position):
+	// Draw map data (kills/secrets/items/time) attached to the
+	// minimap position, even if the minimap itself isn't drawn.
 	ui void DrawMapData(Vector2 minimapOfs, int flags, double minimapDiameter)
 	{
 		bool shouldDrawKills = c_DrawKills.GetBool();
@@ -4497,100 +4502,92 @@ class JGPUFH_FlexibleHUD : EventHandler
 		}
 
 		double scale = clamp(c_MapDataScale.GetFloat(), 0.1, 5.0);
-		Vector2 startpos = (0,0);
 		HUDFont hfnt; Vector2 fntscale;
 		[hfnt, fntscale] = GetHUDFont(smallHUDFont);
 
-		// This element is anchored to the bottom or top center
-		// of the minimap. However, it can also be scaled individually,
-		// and if it becomes wider than the minimap, and the minimap is
-		// anchored to the left/right screen edge, the center of the
-		// element will need to move. Thus, we'll need to start by
-		// calculating the width of its left and right side.
-
-		// First, get the strings for the left side:
-		String s_kills, s_items, s_secrets, s_killcount, s_itemcount, s_secretcount;
-		s_kills = StringTable.Localize("$TXT_IMKILLS");
-		s_items = StringTable.Localize("$TXT_IMITEMS");
-		s_secrets = StringTable.Localize("$TXT_IMSECRETS");
-		// And the right side (following the "current/max" pattern):
+		String s_kills, s_items, s_secrets, s_killcount, s_itemcount, s_secretcount, s_time;
+		s_kills = "Kills";
+		s_items = "Items";
+		s_secrets = "Secrets";
 		s_killcount = String.Format("%d\/%d", (multiplayer? CPlayer.killcount : Level.killed_monsters), Level.total_monsters);
 		s_itemcount = String.Format("%d\/%d", (multiplayer? CPlayer.itemcount : Level.found_items), Level.total_items);
 		s_secretcount = String.Format("%d\/%d", (multiplayer? CPlayer.secretcount : Level.found_secrets), Level.total_secrets);
-		
-		// Move startpos.x only if this element is NOT at screen center.
-		// Due to how odd DI flags are set up, this has to be done explicitly like this,
-		// including checking RIGHT before LEFT (same as in AdjustElementPos):
-		if ((flags & StatusBarCore.DI_SCREEN_HCENTER) != StatusBarCore.DI_SCREEN_HCENTER)
+		if (shouldDrawTime)
 		{
-			double longestString;
-			bool rightside = (flags & StatusBarCore.DI_SCREEN_RIGHT) == StatusBarCore.DI_SCREEN_RIGHT;
-
-			if (shouldDrawKills)
-			{
-				longestString = max(longestString, hfnt.mFont.StringWidth(rightside ? s_killcount : s_kills));
-			}
-			if (shouldDrawItems)
-			{
-				longestString = max(longestString, hfnt.mFont.StringWidth(rightside? s_itemcount : s_items));
-			}
-			if (shouldDrawSecrets)
-			{
-				longestString = max(longestString, hfnt.mFont.StringWidth(rightside? s_secretcount : s_secrets));
-			}
-
-			// Move the center by either the length of the longest string,
-			// or half the width of the minimap - whichever is wider:
-			longestString = max(minimapDiameter*0.5, longestString * fntscale.x * scale * 0.5);
-			startpos.x += rightside? -longestString : longestString;
+			let [h,m,s] = TicsToHours(Level.time);
+			s_time = String.Format("\cQ%d:%02d:%02d", h, m, s);
 		}
 
-		// Now offset vertical position based on the vertical position of the minimap:
-
-		// top:
-		if ((flags & StatusBarCore.DI_SCREEN_BOTTOM) == StatusBarCore.DI_SCREEN_BOTTOM)
-			startpos.y = -minimapDiameter;
-		// vertical center:
-		else if ((flags & StatusBarCore.DI_SCREEN_VCENTER) == StatusBarCore.DI_SCREEN_VCENTER)
-			startpos.y = minimapDiameter * 0.5;
-		// bottom:
-		else
-			startpos.y = minimapDiameter;
-
-		// Feed the calculated position with minimap's current offsets into adjustment function.
-		// Since we've manipulated starting position, we don't need to account for size,
-		// so we pass (0,0) as width/height:
-		Vector2 pos = AdjustElementPos(startpos, flags, (0,0), minimapOfs);
-		// Since this thing is anchored to the minimap, and the minimap,
-		// being drawn by Screen, ignores HUD aspect scaling, we
-		// need to make sure this bit's position also ignores
-		// HUD scaling:
-		if (c_aspectscale.GetBool())
-		{
-			pos.y /= RESASPECTSCALE;
-		}
-
-		// From here on scale is used to adjust the font size only,
-		// so we'll start with 50%, which looks good as a default
-		// value for the default smallfont:
 		scale *= 0.5;
 		fntscale *= scale;
 		let fy = GetFontHeight(smallHUDFont, scale);
-		double indent = 1 * scale;
-		
-		// flip if it's at the bottom:
-		if ((flags & StatusBarCore.DI_SCREEN_BOTTOM) == StatusBarCore.DI_SCREEN_BOTTOM)
+		double lineSpacing = 1 * scale;
+		double textIndent = 2 * fntscale.x;
+		double leftWidth, rightWidth;
+		int rows;
+		if (shouldDrawKills)
 		{
-			int vofs;
-			if (shouldDrawKills)
-				vofs++;
-			if (shouldDrawItems)
-				vofs++;
-			if (shouldDrawSecrets)
-				vofs++;
-			if (shouldDrawTime)
-				vofs++;
-			pos.y -= ((fy + indent) * vofs + indent);
+			leftWidth = Max(leftWidth, hfnt.mFont.StringWidth(s_kills) * fntscale.x + textIndent);
+			rightWidth = Max(rightWidth, hfnt.mFont.StringWidth(s_killcount) * fntscale.x + textIndent);
+			rows++;
+		}
+		if (shouldDrawItems)
+		{
+			leftWidth = Max(leftWidth, hfnt.mFont.StringWidth(s_items) * fntscale.x + textIndent);
+			rightWidth = Max(rightWidth, hfnt.mFont.StringWidth(s_itemcount) * fntscale.x + textIndent);
+			rows++;
+		}
+		if (shouldDrawSecrets)
+		{
+			leftWidth = Max(leftWidth, hfnt.mFont.StringWidth(s_secrets) * fntscale.x + textIndent);
+			rightWidth = Max(rightWidth, hfnt.mFont.StringWidth(s_secretcount) * fntscale.x + textIndent);
+			rows++;
+		}
+		if (shouldDrawTime)
+		{
+			double halfTimeWidth = hfnt.mFont.StringWidth(s_time) * fntscale.x * 0.5;
+			leftWidth = Max(leftWidth, Max(halfTimeWidth - textIndent, 0.0));
+			rightWidth = Max(rightWidth, halfTimeWidth + textIndent);
+			rows++;
+		}
+
+		double mapDataHeight = fy * rows + lineSpacing * Max(rows - 1, 0);
+		double aspect = c_aspectscale.GetBool() ? RESASPECTSCALE : 1.0;
+		// Minimap uses Screen's X scale for both axes; convert its square into StatusBar units.
+		double minimapHeight = minimapDiameter * hudscale.x / hudscale.y;
+		double margin = Max(c_MapDataMargin.GetInt(), 0);
+		double verticalMargin = margin * hudscale.x / hudscale.y;
+		Vector2 minimapPos = AdjustElementPos((0,0), flags, (minimapDiameter, minimapDiameter), minimapOfs);
+		minimapPos.y /= aspect;
+
+		int mapDataPosition = Clamp(c_MapDataPosition.GetInt(), MDP_AUTO, MDP_RIGHT);
+		if (mapDataPosition == MDP_AUTO)
+		{
+			mapDataPosition = (flags & StatusBarCore.DI_SCREEN_BOTTOM) == StatusBarCore.DI_SCREEN_BOTTOM ? MDP_ABOVE : MDP_BELOW;
+		}
+
+		Vector2 pos;
+		if (mapDataPosition == MDP_LEFT)
+		{
+			pos.x = minimapPos.x - margin - rightWidth;
+			pos.y = minimapPos.y + (minimapHeight - mapDataHeight) * 0.5;
+		}
+		else if (mapDataPosition == MDP_RIGHT)
+		{
+			pos.x = minimapPos.x + minimapDiameter + margin + leftWidth;
+			pos.y = minimapPos.y + (minimapHeight - mapDataHeight) * 0.5;
+		}
+		else
+		{
+			pos.x = minimapPos.x + minimapDiameter * 0.5;
+			pos.y = mapDataPosition == MDP_ABOVE ?
+				minimapPos.y - verticalMargin - mapDataHeight :
+				minimapPos.y + minimapHeight + verticalMargin;
+
+			if (flags == StatusBarCore.DI_SCREEN_LEFT_TOP || flags == StatusBarCore.DI_SCREEN_LEFT_CENTER || flags == StatusBarCore.DI_SCREEN_LEFT_BOTTOM)
+				pos.x = Max(pos.x, leftWidth);
+			else if (flags == StatusBarCore.DI_SCREEN_RIGHT_TOP || flags == StatusBarCore.DI_SCREEN_RIGHT_CENTER || flags == StatusBarCore.DI_SCREEN_RIGHT_BOTTOM)
+				pos.x = Min(pos.x, -rightWidth);
 		}
 
 		if (shouldDrawKills)
@@ -4599,7 +4596,7 @@ class JGPUFH_FlexibleHUD : EventHandler
 				(multiplayer? CPlayer.killcount : Level.killed_monsters),
 				Level.total_monsters,
 				hfnt, pos, flags, fntscale);
-			pos.y += fy + indent;
+			pos.y += fy + lineSpacing;
 		}
 
 		if (shouldDrawItems)
@@ -4608,7 +4605,7 @@ class JGPUFH_FlexibleHUD : EventHandler
 				(multiplayer? CPlayer.itemcount : Level.found_items),
 				Level.total_items,
 				hfnt, pos, flags, fntscale);
-			pos.y += fy + indent;
+			pos.y += fy + lineSpacing;
 		}
 
 		if (shouldDrawSecrets)
@@ -4617,13 +4614,12 @@ class JGPUFH_FlexibleHUD : EventHandler
 				(multiplayer? CPlayer.secretcount : Level.found_secrets),
 				Level.total_secrets,
 				hfnt, pos, flags, fntscale);
-			pos.y += fy + indent;
+			pos.y += fy + lineSpacing;
 		}
 
 		if (shouldDrawTime)
 		{
-			let [h,m,s] = TicsToHours(Level.time);
-			DrawMapDataElement("", 0, 0, hfnt, pos, flags, fntscale, rightside: String.Format("\cQ%d:%02d:%02d", h, m, s));
+			DrawMapDataElement("", 0, 0, hfnt, pos, flags, fntscale, rightside: s_time);
 		}
 	}
 
