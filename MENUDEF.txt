@@ -95,9 +95,18 @@ OptionMenu "JGPHUD_Appearance"
 	StaticText ""
 	StaticText "$Fonts", yellow
 	StaticText ""
-	TextField "$JGPHUD_GENERAL_FONT_MAIN", "jgphud_mainfont"
-	TextField "$JGPHUD_GENERAL_FONT_MEDIUM", "jgphud_smallfont"
-	TextField "$JGPHUD_GENERAL_FONT_SMALL", "jgphud_numberfont"
+	JGPUFHFontOption "$JGPHUD_GENERAL_FONT_MAIN", "jgphud_mainfont", "JGPUFH_Fonts", "jgphud_mainfontchoice"
+	JGPUFH_CheckCVar "", sapphire, "jgphud_mainfontchoice", "5"
+		TextField "$JGPHUD_GENERAL_FONT_CUSTOM", "jgphud_mainfont"
+	JGPUFH_EndIf ""
+	JGPUFHFontOption "$JGPHUD_GENERAL_FONT_MEDIUM", "jgphud_smallfont", "JGPUFH_Fonts", "jgphud_smallfontchoice"
+	JGPUFH_CheckCVar "", sapphire, "jgphud_smallfontchoice", "5"
+		TextField "$JGPHUD_GENERAL_FONT_CUSTOM", "jgphud_smallfont"
+	JGPUFH_EndIf ""
+	JGPUFHFontOption "$JGPHUD_GENERAL_FONT_SMALL", "jgphud_numberfont", "JGPUFH_Fonts", "jgphud_numberfontchoice"
+	JGPUFH_CheckCVar "", sapphire, "jgphud_numberfontchoice", "5"
+		TextField "$JGPHUD_GENERAL_FONT_CUSTOM", "jgphud_numberfont"
+	JGPUFH_EndIf ""
 	JGPUFHResetALLCCMD "$OPTMNU_DEFAULTS", 1, "fonts"
 	
 	StaticText ""
@@ -536,6 +545,16 @@ OptionValue "MugshotPositions"
 	1, "$JGPHUD_MUGSHOT_LEFTBARS"
 	2, "$JGPHUD_MUGSHOT_RIGHTBARS"
 	3, "$JGPHUD_MUGSHOT_DETACHED"
+}
+
+OptionString "JGPUFH_Fonts"
+{
+	"BigFont", "BigFont"
+	"SmallFont", "SmallFont"
+	"ConsoleFont", "ConsoleFont"
+	"NewConsoleFont", "NewConsoleFont"
+	"NewSmallFont", "NewSmallFont"
+	"__custom__", "$OPTVAL_CUSTOM"
 }
 
 OptionValue "HitmarkersShapes"

@@ -349,7 +349,7 @@ class JGPUFH_FontData ui
 
 	static JGPUFH_FontData Create(name fontname, Vector2 scale)
 	{
-		Font fnt = Font.FindFont(fontname);
+		Font fnt = Font.GetFont(fontname);
 		if (!fnt)
 			return null;
 
@@ -386,18 +386,25 @@ class JGPUFH_FontData ui
 			return true;
 		}
 
-		Font fnt = Font.FindFont(newFontName);
+		Font fnt = Font.GetFont(newFontName);
 		if (!fnt)
 		{
 			Reset();
 			return false;
 		}
-		
+
+		Vector2 size = (d_font_def.GetCharWidth("0"), d_font_def.GetGlyphHeight("0"));
+		Vector2 altSize = (fnt.GetCharWidth("0"), fnt.GetGlyphHeight("0"));
+		// Some game-specific font aliases exist without usable glyph data.
+		if (size.x <= 0 || size.y <= 0 || altSize.x <= 0 || altSize.y <= 0)
+		{
+			Reset();
+			return false;
+		}
+
 		d_font = fnt;
 		d_fontname = newFontName;
 		d_hudfont = HUDFont.Create(fnt);
-		Vector2 size = (d_font_def.GetCharWidth("0"), d_font_def.GetGlyphHeight("0"));
-		Vector2 altSize = (fnt.GetCharWidth("0"), fnt.GetGlyphHeight("0"));
 		d_scale.x = d_scale_def.x * (size.x / altSize.x);
 		d_scale.y = d_scale_def.y * (size.y / altSize.y);
 		return true;

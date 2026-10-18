@@ -6,9 +6,10 @@ General,JGPHUD_GENERAL_TITLE,Title for the general options,Общее,Geral,Allg
 Appearance and scaling options,JGPHUD_GENERAL_APPEARANCE_TITLE,Submenu in the main menu that is simply a collection of visibility options for every HUD block. Lets the user quickly toggle specific blocks on/off without having to enter each block's specific submenu.,Внешний вид и масштабирование,Opções de aparência e escala,,,
 Quick visibility options,JGPHUD_GENERAL_VISIBILITY_TITLE,Submenu in the main menu that only contains a list of options that control visibility of all elements. This lets the user quickly toggle elements on/off without having to open each element's individual menu.,Быстрая настройка отображения элементов,Opções rápidas de visibilidade,,,
 Background,JGPHUD_GENERAL_APPEARANCE_BACKGROUND,"Subtitle in the ""Apperance..."" submenu. Followed by a few options related to the HUD's background.",Фон,Fundo,,,
-Main HUD font,JGPHUD_GENERAL_FONT_MAIN,This fields lets the user input the name of a custom font to be used in the HUD,Основной шрифт,Fonte de HUD principal,,,
-Medium HUD font,JGPHUD_GENERAL_FONT_MEDIUM,This fields lets the user input the name of a custom font to be used in the HUD,Средний шрифт,Fonte de HUD médio,,,
-Smallest HUD font,JGPHUD_GENERAL_FONT_SMALL,This fields lets the user input the name of a custom font to be used in the HUD,Мелкий шрифт,Fonte de HUD menor,,,
+Main HUD font,JGPHUD_GENERAL_FONT_MAIN,Selects the font used for the main HUD text,Основной шрифт,Fonte de HUD principal,,,
+Medium HUD font,JGPHUD_GENERAL_FONT_MEDIUM,Selects the font used for medium-sized HUD text,Средний шрифт,Fonte de HUD médio,,,
+Smallest HUD font,JGPHUD_GENERAL_FONT_SMALL,Selects the font used for the smallest HUD text,Мелкий шрифт,Fonte de HUD menor,,,
+Custom font name,JGPHUD_GENERAL_FONT_CUSTOM,"Only shown when Custom is selected. Enter a font name provided by GZDoom or the loaded mod.",Имя пользовательского шрифта,Nome da fonte personalizada,,,
 Scaling,JGPHUD_GENERAL_APPEARANCE_SCALING,Generic term. A slider that controls the scale of the HUD.,Масштабирование,Escala,,,
 Use clean offset scaling,JGPHUD_GENERAL_APPEARANCE_CLEANOFSSCALE,"General setting under the ""Apperance and scaling options"" menu. This determines how the individual offsets for each element work. If this is enabled, the offsets will become absolute values, ignoring current UI scaling settings. This is preferable for more precise positioning of HUD elements.",Использовать абсолютное смещение,,,,
 "If enabled, offsets applied to the elements ignore

@@ -501,6 +501,72 @@ class OptionMenuItemJGPUFHOption : OptionMenuItemOption
 	}
 }
 
+class OptionMenuItemJGPUFHFontOption : OptionMenuItemOption
+{
+	CVar mChoiceCVar;
+	String mLastFontName;
+
+	OptionMenuItemJGPUFHFontOption Init(String label, Name command, Name values, CVar choiceCVar)
+	{
+		Super.Init(label, command, values);
+		mChoiceCVar = choiceCVar;
+		SyncSelection();
+		return self;
+	}
+
+	override int GetSelection()
+	{
+		return mChoiceCVar ? mChoiceCVar.GetInt() : Super.GetSelection();
+	}
+
+	override void SetSelection(int selection)
+	{
+		int count = OptionValues.GetCount(mValues);
+		if (!mCVar || !mChoiceCVar || selection < 0 || selection >= count)
+		{
+			return;
+		}
+
+		mChoiceCVar.SetInt(selection);
+		if (selection < count - 1)
+		{
+			mCVar.SetString(OptionValues.GetTextValue(mValues, selection));
+		}
+		mLastFontName = mCVar.GetString();
+	}
+
+	override void Ticker()
+	{
+		if (mCVar && !(mCVar.GetString() ~== mLastFontName))
+		{
+			SyncSelection();
+		}
+		Super.Ticker();
+	}
+
+	private void SyncSelection()
+	{
+		if (!mCVar || !mChoiceCVar)
+		{
+			return;
+		}
+
+		String fontName = mCVar.GetString();
+		int count = OptionValues.GetCount(mValues);
+		int selection = count - 1;
+		for (int i = 0; i < count - 1; i++)
+		{
+			if (fontName ~== OptionValues.GetTextValue(mValues, i))
+			{
+				selection = i;
+				break;
+			}
+		}
+		mChoiceCVar.SetInt(selection);
+		mLastFontName = fontName;
+	}
+}
+
 // This not only allows for two conditions, but also
 // allows displaying decimal values, like default Slider,
 // which default ScaleSlider can't do for some reason.

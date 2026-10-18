@@ -154,6 +154,9 @@ nosave int jgphud_CustomItemsY = 2;
 nosave string jgphud_mainfont = "";
 nosave string jgphud_smallfont = "";
 nosave string jgphud_numberfont = "";
+nosave int jgphud_mainfontchoice = 0;
+nosave int jgphud_smallfontchoice = 0;
+nosave int jgphud_numberfontchoice = 0;
 
 // scaling:
 nosave float jgphud_BaseScale = 0.0;
